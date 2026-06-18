@@ -1,6 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from pydantic import BaseModel
+from gemini_service import analyze_location as ai_analyze_location
 
 app = FastAPI(title="GeoWatch AI")
 latest_case = {
@@ -14,6 +15,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
     "http://localhost:5173"
 ],
     allow_credentials=True,
@@ -46,29 +49,32 @@ def analyze_location(data: LocationRequest):
         "status": "SUCCESS"
     })
 
+    ai_result = ai_analyze_location(
+        data.latitude,
+        data.longitude
+    )
+
+    import json
+    result = json.loads(ai_result)
+
     global latest_case
 
     latest_case = {
         "case_id": "GW-2026-001",
         "location": "Live Analysis Zone",
-        "risk_score": 89,
-        "priority": "HIGH",
+        "risk_score": result["risk_score"],
+        "priority": result["priority"],
         "status": "Open"
     }
- 
 
     return {
         "case_id": "GW-2026-001",
-        "risk_score": 89,
-        "priority": "HIGH",
+        "risk_score": result["risk_score"],
+        "priority": result["priority"],
         "latitude": data.latitude,
         "longitude": data.longitude,
-        "findings": [
-            "Vegetation loss detected",
-            "Possible mining activity"
-        ]
+        "findings": result["findings"]
     }
-
 
 @app.get("/cases")
 def get_cases():
