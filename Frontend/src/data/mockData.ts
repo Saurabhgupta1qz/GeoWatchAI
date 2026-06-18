@@ -1,0 +1,310 @@
+import { MonitoringZone, Alert, Case } from '../types';
+
+export const mockZones: MonitoringZone[] = [
+  {
+    id: 'zone-hasdeo',
+    name: 'Hasdeo Forest Region',
+    lat: 22.7824,
+    lng: 82.5939,
+    riskScore: 92,
+    threatLevel: 'CRITICAL',
+    vegetationLoss: 45.1,
+    excavationArea: true,
+    accessRoads: true,
+    encroachmentArea: true,
+    priority: 'CRITICAL',
+    lastUpdate: '2026-06-17 08:34 UTC',
+    status: 'Inspection Assigned',
+    region: 'Surguja & Korba Districts, Chhattisgarh',
+    country: 'India',
+    findings: 'Dense canopy loss detected across a contiguous pristine forest sector. High-resolution synthetic-aperture radar (SAR) indicates active bulldozer trails, mechanical equipment mobilization, and unauthorized perimeter expansion bordering critical elephant migration corridors within Hasdeo Arand.',
+    recommendations: 'Immediately notify the MoEFCC Sub-Regional Office and Chhattisgarh State Forest Department to freeze clearings. Mobilize a drone monitoring flyover to map coordinates and issue immediate stop-work mandates under the Forest Conservation Act.',
+    sizeHectares: 1420,
+    reporter: 'Forest Survey of India (FSI) Canopy Monitor',
+    waterPollutionLevel: 'High'
+  },
+  {
+    id: 'zone-aravalli',
+    name: 'Aravalli Hills Eco-Sensitive Zone',
+    lat: 28.3242,
+    lng: 77.1084,
+    riskScore: 86,
+    threatLevel: 'HIGH',
+    vegetationLoss: 18.5,
+    excavationArea: true,
+    accessRoads: true,
+    encroachmentArea: true,
+    priority: 'HIGH',
+    lastUpdate: '2026-06-17 04:15 UTC',
+    status: 'Under Review',
+    region: 'Faridabad-Gurugram Border, Haryana',
+    country: 'India',
+    findings: 'Unauthorized silica sand extraction and granite stone quarrying observed within the notified eco-sensitive zone. Thermal and particulate sensors register active heavy stone-crushing operations. Unregulated sub-surface extraction pumps have caused a 3m localized drop in seasonal water recharges.',
+    recommendations: 'Send urgent physical verification directives to the Haryana State Pollution Control Board (HSPCB) and Gurgaon District Environmental Authority. Seize all unregistered earthmovers and seal coordinates.',
+    sizeHectares: 340,
+    reporter: 'ISRO Bhuvan Portal Custom Sensor',
+    waterPollutionLevel: 'Moderate'
+  },
+  {
+    id: 'zone-sonbhadra',
+    name: 'Sonbhadra Mining Belt',
+    lat: 24.4128,
+    lng: 83.0239,
+    riskScore: 78,
+    threatLevel: 'HIGH',
+    vegetationLoss: 38.4,
+    excavationArea: true,
+    accessRoads: true,
+    encroachmentArea: false,
+    priority: 'HIGH',
+    lastUpdate: '2026-06-16 19:42 UTC',
+    status: 'Active',
+    region: 'Sonbhadra District, Uttar Pradesh',
+    country: 'India',
+    findings: 'Substantial physical stripping of topsoil and unauthorized coal/sand pit expansion exceeding legal lease lines by 320 meters. Heavy siltation and mine wash residue are flowing directly into the adjacent Rihand Reservoir tributaries, carrying heightened toxic trace levels.',
+    recommendations: 'Submit a strict notice of violation to the District Mining Officer and Uttar Pradesh Pollution Control Board. Mandate immediate backfilling of over-excavated zones and erect geotextile silt fences.',
+    sizeHectares: 850,
+    reporter: 'Landsat-9 AI Engine',
+    waterPollutionLevel: 'High'
+  },
+  {
+    id: 'zone-sariska',
+    name: 'Sariska Tiger Reserve Buffer Zone',
+    lat: 27.3215,
+    lng: 76.4256,
+    riskScore: 34,
+    threatLevel: 'LOW',
+    vegetationLoss: 4.2,
+    excavationArea: false,
+    accessRoads: false,
+    encroachmentArea: true,
+    priority: 'LOW',
+    lastUpdate: '2026-06-15 11:20 UTC',
+    status: 'Resolved',
+    region: 'Alwar District, Rajasthan',
+    country: 'India',
+    findings: 'Minor perimeter clearance of secondary shrub land detected on private holdings near the official tiger reserve buffer. Local authorities suspect unauthorized commercial resort plotting and localized land levelling.',
+    recommendations: 'Alert the local Wildlife Warden of the Rajasthan Forest Department. Maintain weekly satellite telemetry monitoring to prevent permanent structural construction within the eco-sensitive buffer core.',
+    sizeHectares: 240,
+    reporter: 'FSI Canopy Monitor',
+    waterPollutionLevel: 'None'
+  },
+  {
+    id: 'zone-dehradun',
+    name: 'Dehradun Forest Region',
+    lat: 30.3418,
+    lng: 78.0532,
+    riskScore: 61,
+    threatLevel: 'MEDIUM',
+    vegetationLoss: 22.9,
+    excavationArea: true,
+    accessRoads: true,
+    encroachmentArea: false,
+    priority: 'MEDIUM',
+    lastUpdate: '2026-06-16 15:40 UTC',
+    status: 'Under Review',
+    region: 'Dehradun & Mussoorie Foothills, Uttarakhand',
+    country: 'India',
+    findings: 'Unauthorized hillside scarring and clearing on steep slopes (elevations exceeding 1,200m). Slope clearing and excavation without necessary clearance credentials risk triggering micro-landslides during upcoming monsoon seasons.',
+    recommendations: 'Deploy regional division officers of the Uttarakhand Forest Department to verify slope stability controls. Restrict riverbed gravel mining in the neighboring river channels.',
+    sizeHectares: 510,
+    reporter: 'Sentinel-2 Sentinel AI',
+    waterPollutionLevel: 'Moderate'
+  }
+];
+
+export const mockAlerts: Alert[] = [
+  {
+    id: 'alert-101',
+    zoneId: 'zone-hasdeo',
+    locationName: 'Hasdeo Pristine Canopy Sector B',
+    lat: 22.7824,
+    lng: 82.5939,
+    type: 'Deforestation',
+    riskScore: 92,
+    timestamp: '2026-06-17 08:34 UTC',
+    priority: 'CRITICAL',
+    status: 'Critical',
+    assignedOfficer: 'Divisional Forest Officer (DFO) R. K. Shrivastava',
+    notes: [
+      'Bulldozer movement logged on high-res SAR on 2026-06-17.',
+      'Urgent alert channeled to Chhattisgarh Wildlife Protection Unit.'
+    ],
+    findings: 'Critical canopy clearance within the Hasdeo Arand wilderness has triggered automated elephant migration buffer alerts.'
+  },
+  {
+    id: 'alert-102',
+    zoneId: 'zone-aravalli',
+    locationName: 'Gurugram-Sohna Aravalli Range',
+    lat: 28.3242,
+    lng: 77.1084,
+    type: 'Illegal Mining',
+    riskScore: 86,
+    timestamp: '2026-06-17 04:15 UTC',
+    priority: 'HIGH',
+    status: 'Critical',
+    assignedOfficer: 'District Environmental Officer (DEO) Vineet Kumar',
+    notes: [
+      'Aerosol optical thickness indices exceed state pollution baseline limits by 140%.',
+      'HSPCB notified on unofficial stone crushing operations.'
+    ],
+    findings: 'Heavy mechanical pulverization and silica mining in protected hills without MoEFCC environmental clearance.'
+  },
+  {
+    id: 'alert-103',
+    zoneId: 'zone-sonbhadra',
+    locationName: 'Sonbhadra Coal Boundary Overflow',
+    lat: 24.4128,
+    lng: 83.0239,
+    type: 'Land Encroachment',
+    riskScore: 78,
+    timestamp: '2026-06-17 02:10 UTC',
+    priority: 'HIGH',
+    status: 'Pending',
+    notes: [
+      'Turbidity readings downstream of coal dump are exceedingly high.',
+      'Regional representative scheduled for physical soil core testing.'
+    ],
+    findings: 'Mining runoffs have overflowed physical containment barriers, encroaching upon adjoining protected community grasslands.'
+  },
+  {
+    id: 'alert-104',
+    zoneId: 'zone-dehradun',
+    locationName: 'Mussoorie Foothills Sloped Sector',
+    lat: 30.3418,
+    lng: 78.0532,
+    type: 'Habitat Destruction',
+    riskScore: 61,
+    timestamp: '2026-06-16 15:40 UTC',
+    priority: 'MEDIUM',
+    status: 'Pending',
+    notes: [
+      'Slope gradient alert activated for high landslide risk.',
+      'Uttarakhand SPCB requested to audit structural excavation clearance.'
+    ],
+    findings: 'Deep terracing and limestone clearing without approved Soil Stability Management Plans.'
+  }
+];
+
+export const mockCases: Case[] = [
+  {
+    caseId: 'GW-2026-001',
+    zoneId: 'zone-hasdeo',
+    locationName: 'Hasdeo Forest Pristine Segment',
+    lat: 22.7824,
+    lng: 82.5939,
+    type: 'Deforestation',
+    status: 'Inspection Scheduled',
+    riskScore: 92,
+    estimatedDamage: 'Rs. 5.8 Crore Est. (Canopy Deficit & Wildlife Corridors)',
+    areaImpacted: 1420,
+    suggestedAction: 'Enforce complete stop-clearing mandates in Hasdeo Arand. Instruct the Chhattisgarh Forest Department to audit the boundaries. Direct immediate deployment of protective forest monitoring camps.',
+    assignedOfficer: 'Conservator of Forests S. K. Maurya',
+    assignedAgency: 'Chhattisgarh State Forest Department',
+    assignedDistrict: 'Surguja District',
+    expectedResolutionTime: '48 Hours',
+    expectedInspectionDate: '2026-06-19',
+    priority: 'CRITICAL',
+    timestamp: '2026-06-17 08:34 UTC',
+    findings: 'Pristine canopy loss detected over 4.2 hectares via Sentinel-2 orthorectified imagery. SAR charts track distinct mechanical track coordinates in crucial ecological zones.',
+    auditTimeline: [
+      { event: 'Detection Created', timestamp: '2026-06-17 08:34 UTC', description: 'Autonomous satellite processing identified severe vegetation change index deviations.' },
+      { event: 'Report Generated', timestamp: '2026-06-17 08:45 UTC', description: 'Environmental Intelligence Dossier automatically compiled for MoEFCC review.' },
+      { event: 'Officer Assigned', timestamp: '2026-06-17 09:15 UTC', description: 'Conservator of Forests S. K. Maurya designated as prime investigator.' },
+      { event: 'Inspection Scheduled', timestamp: '2026-06-17 10:20 UTC', description: 'Ground patrol team scheduled for field boundary verification.' }
+    ]
+  },
+  {
+    caseId: 'GW-2026-002',
+    zoneId: 'zone-aravalli',
+    locationName: 'Gurugram Aravalli Eco-Sensitive Hills',
+    lat: 28.3242,
+    lng: 77.1084,
+    type: 'Illegal Mining',
+    status: 'Assigned',
+    riskScore: 86,
+    estimatedDamage: 'Rs. 3.2 Crore Est. (Groundwater Table & Range Erosion)',
+    areaImpacted: 340,
+    suggestedAction: 'Direct HSPCB and local administration to seize quarry machinery. Impose environmental damage compensation charges as per SPCB guidelines.',
+    assignedOfficer: 'Deputy Conservator Vineet Kumar',
+    assignedAgency: 'Haryana State Pollution Control Board (HSPCB)',
+    assignedDistrict: 'Gurugram District',
+    expectedResolutionTime: '72 Hours',
+    expectedInspectionDate: '2026-06-20',
+    priority: 'HIGH',
+    timestamp: '2026-06-17 04:15 UTC',
+    findings: 'Severe stone crushing, dust aerosols, and illegal mechanical quarrying. Satellite optical feeds show prominent hillside excavation zones and active heavy loaders departing site.',
+    auditTimeline: [
+      { event: 'Detection Created', timestamp: '2026-06-17 04:15 UTC', description: 'Bhuvan Portal high-res sweep registered topographical elevation shifts.' },
+      { event: 'Officer Assigned', timestamp: '2026-06-17 06:12 UTC', description: 'Deputy Conservator Vineet Kumar assigned to lead Gurugram Regional Compliance SMT.' }
+    ]
+  },
+  {
+    caseId: 'GW-2026-003',
+    zoneId: 'zone-sonbhadra',
+    locationName: 'Sonbhadra Coal Belt Sector 4',
+    lat: 24.4128,
+    lng: 83.0239,
+    type: 'Land Encroachment',
+    status: 'Under Investigation',
+    riskScore: 78,
+    estimatedDamage: 'Rs. 2.1 Crore Est. (Toxic Coal Drainage & Siltation)',
+    areaImpacted: 850,
+    suggestedAction: 'Enforce mine boundary confinement blocks. Instruct operators of mining concessions to reconstruct sediment retention bunds immediately.',
+    assignedOfficer: 'Mining Inspector Amit Mishra',
+    assignedAgency: 'UP Mining Regulatory Agency',
+    assignedDistrict: 'Sonbhadra District',
+    expectedResolutionTime: '96 Hours',
+    expectedInspectionDate: '2026-06-18',
+    priority: 'HIGH',
+    timestamp: '2026-06-16 19:42 UTC',
+    findings: 'Unplanned excavation overflow crossing past lease boundaries. Active heavy trucks detected loading silt material in reserve forests.',
+    auditTimeline: [
+      { event: 'Detection Created', timestamp: '2026-06-16 19:42 UTC', description: 'AI detector noticed coal waste heap creep over traditional pasture buffer borders.' },
+      { event: 'Officer Assigned', timestamp: '2026-06-16 20:30 UTC', description: 'Amit Mishra assigned to direct soil and runoff perimeter controls.' },
+      { event: 'Field Verification Started', timestamp: '2026-06-17 08:00 UTC', description: 'UP Pollution Control physical water core samples gathered downstream.' },
+      { event: 'Action Taken', timestamp: '2026-06-17 11:15 UTC', description: 'Fines issued under Water Act (Prevention & Control of Pollution) to lessee.' }
+    ]
+  },
+  {
+    caseId: 'GW-2026-004',
+    zoneId: 'zone-sariska',
+    locationName: 'Sariska Tiger Reserve Outer Buffer',
+    lat: 27.3215,
+    lng: 76.4256,
+    type: 'Habitat Destruction',
+    status: 'Resolved',
+    riskScore: 34,
+    estimatedDamage: 'Rs. 45 Lakhs Est. (Resort Construction Encroachment)',
+    areaImpacted: 240,
+    suggestedAction: 'Dismantle unauthorized boundary fencing. Enforce standard MoEFCC wildlife migratory restrictions.',
+    assignedOfficer: 'Ranger Priya Sharma',
+    assignedAgency: 'Rajasthan Forest Department',
+    assignedDistrict: 'Alwar District',
+    expectedResolutionTime: 'Completed',
+    expectedInspectionDate: '2026-06-16',
+    priority: 'LOW',
+    timestamp: '2026-06-15 11:20 UTC',
+    findings: 'Erection of temporary perimeter walls on agricultural plots close to animal corridors. Quick administrative and forest guard sweeps secured complete restoration.',
+    auditTimeline: [
+      { event: 'Detection Created', timestamp: '2026-06-15 11:20 UTC', description: 'Ecosystem change detection algorithms flag localized brick and mortar stockpiling.' },
+      { event: 'Officer Assigned', timestamp: '2026-06-15 13:10 UTC', description: 'Officer Priya Sharma mobilized with buffer patrol guards.' },
+      { event: 'Field Verification Started', timestamp: '2026-06-16 09:12 UTC', description: 'Rangers verify construction layout violates protected tiger reserve buffer regulations.' },
+      { event: 'Action Taken', timestamp: '2026-06-16 14:00 UTC', description: 'Rajasthan district forestry squads halt work and demolish illegal partition walls.' },
+      { event: 'Case Resolved', timestamp: '2026-06-17 09:30 UTC', description: 'Physical environment restored. Fines settled and coordinate loop labeled COMPLIANT.' }
+    ]
+  }
+];
+
+export const mockDefaultSettings = {
+  confidenceThreshold: 75,
+  alertOnCriticalOnly: false,
+  satelliteRefreshInterval: 'Daily',
+  autoEscalation: true,
+  integrations: {
+    interferometry: true,
+    sentinelRadar: true,
+    landsatThermal: true,
+    authorityAlerts: true
+  }
+};

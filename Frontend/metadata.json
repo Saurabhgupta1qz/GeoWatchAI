@@ -1,0 +1,6 @@
+{
+  "name": "GeoWatch AI",
+  "description": "An AI-powered environmental intelligence platform using satellite imagery, computer vision, and geospatial analysis to monitor mining, deforestation, and land violations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
