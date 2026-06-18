@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { analyzeLocation } from "../services/api";
 import { motion } from 'motion/react';
 import { 
   Users, Building, ShieldAlert, Calendar, Clock, MapPin, 
@@ -102,14 +103,24 @@ export default function InspectionOperations({
   };
 
   // Schedule / Dispatch Field Inspection Workflow
-  const handleDispatchTeam = () => {
-    triggerVerification('Dispatch Team', () => {
-      const dateStr = expectedInspectionDate || new Date().toISOString().split('T')[0];
-      const newEvent: AuditEvent = {
-        event: 'Field Verification Started',
-        timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC',
-        description: `Joint environmental survey team deployed to site coordinates (${activeCase.lat.toFixed(4)}, ${activeCase.lng.toFixed(4)}) with laser-canopy scanners and water core collection protocols.`
-      };
+const handleDispatchTeam = async () => {
+
+  const result = await analyzeLocation(activeCase.lat, activeCase.lng);
+  console.log("Backend Response:", result);
+  setDispatchStatusMsg(
+  `AI Analysis Complete | Risk Score: ${result.risk_score} | Priority: ${result.priority}`
+);
+
+  triggerVerification('Dispatch Team', () => {
+    const dateStr = expectedInspectionDate || new Date().toISOString().split('T')[0];
+
+    const newEvent: AuditEvent = {
+      event: 'Field Verification Started',
+      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC',
+      description: `Joint environmental survey team deployed to site coordinates (${activeCase.lat.toFixed(4)}, ${activeCase.lng.toFixed(4)}) with laser-canopy scanners and water core collection protocols.`
+    };
+
+    // YAHAN SE TUMHARA EXISTING CODE SAME RAHEGA
       const updated: Case = {
         ...activeCase,
         status: 'Inspection Scheduled',
