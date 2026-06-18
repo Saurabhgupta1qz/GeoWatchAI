@@ -141,6 +141,8 @@ export function ArmorIQProvider({ children }: { children: React.ReactNode }) {
             details = 'Verities statutory restorative remediation. Case marked complaint and permanently resolved.';
           } else if (verifyingAction === 'Escalate Case') {
             details = 'Statutory environmental notices served. Directives escalated for prosecution under Wildlife & Forest Laws.';
+          } else if (verifyingAction === 'Save Parameters' || verifyingAction === 'Update Parameters') {
+            details = 'Environmental database parameters successfully aligned, signed, and saved to the secure state registry storage.';
           }
 
           // Add to audit records

@@ -58,19 +58,21 @@ export default function InspectionOperations({
   }
 
   // Updates custom database parameter changes
-  const handleApplyChanges = () => {
-    const updated: Case = {
-      ...activeCase,
-      assignedOfficer,
-      assignedAgency,
-      assignedDistrict,
-      expectedInspectionDate,
-      priority,
-      status: caseStatus
-    };
-    onUpdateCase(updated);
-    setDispatchStatusMsg('COMPLIANCE PARAMETERS UPDATED: Environmental metadata aligned to State Registry.');
-    setTimeout(() => setDispatchStatusMsg(null), 3000);
+   const handleApplyChanges = () => {
+    triggerVerification('Save Parameters', () => {
+      const updated: Case = {
+        ...activeCase,
+        assignedOfficer,
+        assignedAgency,
+        assignedDistrict,
+        expectedInspectionDate,
+        priority,
+        status: caseStatus
+      };
+      onUpdateCase(updated);
+      setDispatchStatusMsg('COMPLIANCE PARAMETERS UPDATED: Environmental metadata aligned to State Registry.');
+      setTimeout(() => setDispatchStatusMsg(null), 3000);
+    });
   };
 
   // Assign Forest Officer Workflow
