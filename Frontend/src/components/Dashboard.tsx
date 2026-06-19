@@ -136,49 +136,82 @@ export default function Dashboard({ selectedZone, onSelectZone, onAddToAlerts }:
   };
 
   // Handle custom location button analysis
-  const handleAnalyzeCustom = () => {
-    const lat = parseFloat(latInput);
-    const lng = parseFloat(lngInput);
 
-    if (isNaN(lat) || isNaN(lng)) {
-      showNotification('Invalid GPS coordinates entered.', 'error');
-      return;
+  const handleAnalyzeCustom = async () => {
+  const lat = parseFloat(latInput);
+  const lng = parseFloat(lngInput);
+
+  if (isNaN(lat) || isNaN(lng)) {
+    showNotification('Invalid GPS coordinates entered.', 'error');
+    return;
+  }
+
+  try {
+    setIsScanning(true);
+    setScanProgress(0);
+    setScanLogs([]);
+
+    const response = await fetch('http://127.0.0.1:8000/analyze-location', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        latitude: lat,
+        longitude: lng,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Backend analysis failed.');
     }
 
-    // Generate a beautiful custom mock zone matching the inputs
+    const data = await response.json();
+
+    const riskScore = data.risk_score ?? 55;
+    let threatLevel: ThreatLevel = 'LOW';
+
+    if (riskScore >= 85) threatLevel = 'CRITICAL';
+    else if (riskScore >= 70) threatLevel = 'HIGH';
+    else if (riskScore >= 45) threatLevel = 'MEDIUM';
+    else threatLevel = 'LOW';
+
     const customZone: MonitoringZone = {
-      id: `zone-custom-${Math.floor(Math.random() * 1000)}`,
+      id: `zone-custom-${lat.toFixed(4)}-${lng.toFixed(4)}`,
       name: customZoneName || `Sector [${lat.toFixed(4)}, ${lng.toFixed(4)}]`,
       lat,
       lng,
-      riskScore: Math.floor(40 + Math.random() * 55), // Random risk score from 40 to 95
-      threatLevel: 'HIGH', // Fallback defaults
-      vegetationLoss: parseFloat((10 + Math.random() * 32).toFixed(1)),
-      excavationArea: Math.random() > 0.4,
-      accessRoads: Math.random() > 0.3,
-      encroachmentArea: Math.random() > 0.5,
-      priority: 'HIGH',
-      lastUpdate: 'Just now (AI Live Stream)',
+      riskScore,
+      threatLevel,
+      vegetationLoss: riskScore >= 70 ? 28.5 : riskScore >= 45 ? 16.2 : 7.8,
+      excavationArea: riskScore >= 70,
+      accessRoads: riskScore >= 60,
+      encroachmentArea: riskScore >= 75,
+      priority: threatLevel,
+      lastUpdate: 'Just now (Backend AI Analysis)',
       status: 'Under Review',
       region: 'Custom Target Sector',
       country: 'India',
-      findings: `Autonomous scan at Lat:${lat.toFixed(4)}, Lng:${lng.toFixed(4)} indicates atypical spatial variations. Spectral indexes suggest dynamic topsoil removal and localized vegetation density decay.`,
-      recommendations: 'Flag coordinates for rapid aerial drone survey. Compare localized temporal forest cover records over the past quarter.',
-      sizeHectares: Math.floor(200 + Math.random() * 1200),
-      reporter: 'GeoWatch Custom On-demand Sweep',
-      waterPollutionLevel: Math.random() > 0.5 ? 'Moderate' : 'None'
+      findings: Array.isArray(data.findings)
+        ? data.findings.join(' ')
+        : 'Backend AI analysis completed.',
+      recommendations:
+        'Flag coordinates for field verification and compliance review.',
+      sizeHectares: riskScore >= 70 ? 900 : riskScore >= 45 ? 520 : 250,
+      reporter: 'GeoWatch Backend AI + Gemini',
+      waterPollutionLevel: riskScore >= 70 ? 'Moderate' : 'None',
     };
-
-    // Correct threat level classification
-    if (customZone.riskScore >= 85) customZone.threatLevel = 'CRITICAL';
-    else if (customZone.riskScore >= 70) customZone.threatLevel = 'HIGH';
-    else if (customZone.riskScore >= 45) customZone.threatLevel = 'MEDIUM';
-    else customZone.threatLevel = 'LOW';
-    customZone.priority = customZone.threatLevel;
 
     onSelectZone(customZone);
     triggerScan(customZone);
-  };
+    showNotification('Backend AI analysis completed successfully.', 'success');
+  } catch (error) {
+    console.error(error);
+    showNotification('Backend connection failed. Please check FastAPI server.', 'error');
+    setIsScanning(false);
+  }
+};
+
 
   // Active Zone Context
   const activeZone = selectedZone || mockZones[0];
