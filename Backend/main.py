@@ -187,17 +187,30 @@ def generate_report(data: ReportRequest):
 def get_audit_logs():
     return audit_logs
 
-from pydantic import BaseModel
+from fastapi import UploadFile, File
+import os
 
-class ImageRequest(BaseModel):
-    image_path: str
+UPLOAD_DIR = "uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @app.post("/classify-image")
-def classify_image(data: ImageRequest):
-    result = classify_satellite_image(data.image_path)
+async def classify_image(file: UploadFile = File(...)):
+    try:
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
 
-    return {
-        "success": True,
-        "prediction": result
-    }
+        with open(file_path, "wb") as buffer:
+            buffer.write(await file.read())
+
+        result = classify_satellite_image(file_path)
+
+        return {
+            "success": True,
+            "prediction": result
+        }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
