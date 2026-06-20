@@ -1,135 +1,273 @@
-# 🌍 GeoWatch AI
+# GeoWatch AI
 
-GeoWatch AI is an AI-powered environmental intelligence platform that leverages satellite imagery, computer vision, and risk analysis to detect illegal mining, deforestation, land encroachment, and environmental violations before irreversible damage occurs.
+GeoWatch AI is an AI-powered environmental compliance monitoring platform that combines satellite image classification, AI-based risk assessment, and ArmorIQ policy governance to identify potential environmental violations and support compliant decision-making workflows.
 
-## 🚀 Problem Statement
+## Problem Statement
 
-Environmental violations are often detected too late, resulting in severe ecological damage and delayed enforcement.
+Illegal mining, deforestation, land encroachment, and environmental violations are often detected late due to manual monitoring processes.
 
-GeoWatch AI helps authorities proactively monitor high-risk regions using satellite intelligence and AI-powered analysis.
-
----
-
-## ✨ Key Features
-
-### 🛰️ Satellite Intelligence
-- Monitor environmental changes using satellite imagery
-- Detect suspicious land-use activities
-- Analyze vegetation loss and land disturbance
-
-### 🤖 AI-Powered Analysis
-- Risk scoring engine
-- Environmental impact assessment
-- AI-generated findings and recommendations
-
-### 🚨 Alert Management
-- Real-time violation alerts
-- Priority-based incident classification
-- Case tracking and monitoring
-
-### 📋 Case Management
-- Automatic Case ID generation
-- Inspection workflow management
-- Officer assignment
-- Resolution tracking
-
-### 🔐 ArmorIQ Security Layer
-- Policy-gated execution
-- Audit logging
-- Secure operational workflows
-- Compliance monitoring
-
-### 📄 PDF Report Generation
-- Automated inspection reports
-- Risk assessment summaries
-- Recommended actions
-- Case documentation
+GeoWatch AI helps authorities and environmental organizations monitor high-risk regions using satellite imagery and AI-powered analysis.
 
 ---
 
-## 🏗️ System Workflow
+## Key Features
 
-```
-Satellite Data
-      ↓
-AI Detection
-      ↓
-Risk Assessment
-      ↓
-ArmorIQ Policy Check
-      ↓
-Case Creation
-      ↓
-Report Generation
-      ↓
-Authority Action
-```
+### AI Location Risk Analysis
+
+* Analyze GPS coordinates
+* Generate environmental risk scores
+* Identify potential violations
+* AI-generated findings and recommendations using Gemini
+
+### Satellite Image Classification
+
+* Upload satellite imagery
+* EuroSAT-trained deep learning model
+* Predict land-cover categories
+* Confidence score generation
+
+### ArmorIQ Policy Governance
+
+* Policy-gated environmental workflows
+* Compliance validation before case creation
+* Audit logging
+* Intent-token based policy verification
+
+### Compliance Case Management
+
+* Create environmental cases
+* Generate compliance reports
+* Track risk levels
+* Escalation workflows
+
+### Audit Logging
+
+* Timestamped actions
+* Policy decisions
+* Compliance tracking
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
-- React.js
-- TypeScript
-- Tailwind CSS
-- Framer Motion
 
-### AI / ML
-- Gemini AI
-- YOLOv8
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Framer Motion
 
-### Satellite Data
-- Sentinel Hub
-- Google Earth Engine
+### Backend
 
-### Security
-- ArmorIQ SDK
+* FastAPI
+* Python
 
-### Database
-- PostgreSQL
+### AI & ML
 
-### Cloud & DevOps
-- AWS
-- Docker
-- GitHub Actions
+* Google Gemini API
+* PyTorch
+* TorchVision
+* EuroSAT Dataset
 
----
+### Governance Layer
 
-## 📊 Core Modules
-
-- Landing Page
-- Command Center Dashboard
-- Alert Center
-- Analytics Console
-- Case Management
-- Audit Logs
-- ArmorIQ Security Layer
-- Environmental Change Analysis
-- Report Generation
+* ArmorIQ SDK
 
 ---
 
-## 🎯 Hackathon Track
+## Project Structure
 
-**Track 2: AI Agent for the Real World**
-
-GeoWatch AI demonstrates how AI can assist environmental authorities in monitoring, compliance, incident response, and enforcement workflows.
+```text
+GeoWatchAI
+│
+├── Backend
+│   ├── armoriq_service.py
+│   ├── gemini_service.py
+│   ├── satellite_service.py
+│   ├── main.py
+│   ├── train_eurosat.py
+│   ├── test_model.py
+│   ├── check_key.py
+│   ├── eurosat_model.pth
+│   └── uploads/
+│
+├── Frontend
+│   ├── src
+│   │   ├── components
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── AlertCenter.tsx
+│   │   │   ├── ArmorIQ.tsx
+│   │   │   ├── Analytics.tsx
+│   │   │   ├── InspectionOperations.tsx
+│   │   │   ├── SituationRoom.tsx
+│   │   │   └── Reports.tsx
+│   │   │
+│   │   ├── data
+│   │   ├── services
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   │
+│   └── package.json
+│
+├── README.md
+└── .gitignore
+```
 
 ---
 
-## 👥 Team
+## API Endpoints
 
-### CodeTitan
+### Analyze Coordinates
 
-- Saurabh Gupta (DTU)
-- Shubhi Tiwari (IGDTUW)
-- Shweta (IGDTUW)
+```http
+POST /analyze-location
+```
+
+Input:
+
+```json
+{
+  "latitude": 22.7824,
+  "longitude": 82.5939
+}
+```
 
 ---
 
-## 🌱 Vision
+### Classify Satellite Image
 
-Transforming Satellite Imagery into Actionable Intelligence.
+```http
+POST /classify-image
+```
 
-Detect illegal mining, deforestation, and environmental violations before irreversible damage occurs.
+Upload image using multipart/form-data.
+
+---
+
+### Create Compliance Case
+
+```http
+POST /create-case
+```
+
+ArmorIQ policy validation is executed before case creation.
+
+---
+
+### Generate Report
+
+```http
+POST /generate-report
+```
+
+---
+
+### Audit Logs
+
+```http
+GET /audit-logs
+```
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone <repository-url>
+cd GeoWatchAI
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd Backend
+
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+Create `.env`
+
+```env
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+
+ARMORIQ_API_KEY=YOUR_ARMORIQ_API_KEY
+
+ARMORIQ_USER_EMAIL=YOUR_EMAIL
+```
+
+Run Backend
+
+```bash
+uvicorn main:app --reload
+```
+
+Backend URL:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger Docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Frontend Setup
+
+```bash
+cd Frontend
+
+npm install
+
+npm run dev
+```
+
+Frontend URL:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## Demo Workflow
+
+1. Select or enter target coordinates.
+2. Run AI coordinate analysis.
+3. Upload satellite image.
+4. Generate land-cover prediction.
+5. Trigger compliance escalation.
+6. Validate workflow through ArmorIQ.
+7. Review audit logs and findings.
+
+---
+
+## Future Scope
+
+* Real-time satellite feeds
+* Multi-temporal image comparison
+* Environmental alert subscriptions
+* Automated report generation
+* Government GIS integration
+* Predictive environmental risk modeling
+
+---
+
+## Team
+
+GeoWatch AI Hackathon Team
+
+Built using AI, ML, Satellite Intelligence, and Policy Governance.
+
