@@ -1,13 +1,16 @@
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
 from gemini_service import analyze_location as ai_analyze_location
 from armoriq_service import check_policy
 import json
+import os
+import shutil
 from datetime import datetime
 from satellite_service import classify_satellite_image
-app = FastAPI(title="GeoWatch AI")
 
+
+app = FastAPI(title="GeoWatch AI")
 latest_case = {
     "case_id": "GW-2026-001",
     "location": "Live Analysis Zone",
@@ -189,15 +192,20 @@ def get_audit_logs():
 
 from pydantic import BaseModel
 
-class ImageRequest(BaseModel):
-    image_path: str
-
-
 @app.post("/classify-image")
-def classify_image(data: ImageRequest):
-    result = classify_satellite_image(data.image_path)
+async def classify_image(file: UploadFile = File(...)):
+    upload_dir = "uploaded_images"
+    os.makedirs(upload_dir, exist_ok=True)
+
+    file_path = os.path.join(upload_dir, file.filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    result = classify_satellite_image(file_path)
 
     return {
         "success": True,
+        "filename": file.filename,
         "prediction": result
     }

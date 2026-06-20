@@ -62,6 +62,13 @@ export default function Dashboard({ selectedZone, onSelectZone, onAddToAlerts }:
   const [scanLogs, setScanLogs] = useState<string[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+ const [selectedImage, setSelectedImage] = useState<File | null>(null);
+ const [imagePrediction, setImagePrediction] = useState<{
+  predicted_class: string;
+  confidence: number;
+} | null>(null);
+const [isImageAnalyzing, setIsImageAnalyzing] = useState(false);
+
   // Custom visual notification state (replacing window.alert)
   const [notification, setNotification] = useState<{
     show: boolean;
@@ -211,7 +218,41 @@ export default function Dashboard({ selectedZone, onSelectZone, onAddToAlerts }:
     setIsScanning(false);
   }
 };
+const handleImageClassification = async () => {
+  if (!selectedImage) {
+    showNotification('Please select a satellite image first.', 'error');
+    return;
+  }
 
+  try {
+    setIsImageAnalyzing(true);
+
+    const formData = new FormData();
+    formData.append('file', selectedImage);
+
+    const response = await fetch('http://127.0.0.1:8000/classify-image', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Image classification failed.');
+    }
+
+    const data = await response.json();
+    setImagePrediction(data.prediction);
+
+    showNotification(
+      `Satellite image classified as ${data.prediction.predicted_class} with ${data.prediction.confidence}% confidence.`,
+      'success'
+    );
+  } catch (error) {
+    console.error(error);
+    showNotification('Satellite image classification failed.', 'error');
+  } finally {
+    setIsImageAnalyzing(false);
+  }
+};
 
   // Active Zone Context
   const activeZone = selectedZone || mockZones[0];
@@ -559,76 +600,136 @@ export default function Dashboard({ selectedZone, onSelectZone, onAddToAlerts }:
         {/* LEFT COLUMN: QUERY CONTROLS (3/12 COLS) */}
         <div className="lg:col-span-3 space-y-5 flex flex-col">
           
-          {/* Target Query Panel */}
-          <div className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-4 text-left">
-            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <Crosshair className="w-4 h-4 text-teal-600" />
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">
-                Target Coordinate Query
-              </h3>
-            </div>
+        {/* Target Query Panel */}
+<div className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-4 text-left">
+  <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+    <Crosshair className="w-4 h-4 text-teal-600" />
+    <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">
+      Target Coordinate Query
+    </h3>
+  </div>
 
-            <div className="space-y-3">
-              <div>
-                <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1">
-                  Sector Label / Name
-                </label>
-                <input
-                  type="text"
-                  value={customZoneName}
-                  onChange={(e) => setCustomZoneName(e.target.value)}
-                  placeholder="e.g. Hasdeo Forest"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-all font-sans"
-                />
-              </div>
+  <div className="space-y-3">
+    <div>
+      <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1">
+        Sector Label / Name
+      </label>
+      <input
+        type="text"
+        value={customZoneName}
+        onChange={(e) => setCustomZoneName(e.target.value)}
+        placeholder="e.g. Hasdeo Forest"
+        className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-all font-sans"
+      />
+    </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1">
-                    Latitude (N/S)
-                  </label>
-                  <input
-                    type="text"
-                    value={latInput}
-                    onChange={(e) => setLatInput(e.target.value)}
-                    placeholder="-4.3822"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1">
-                    Longitude (E/W)
-                  </label>
-                  <input
-                    type="text"
-                    value={lngInput}
-                    onChange={(e) => setLngInput(e.target.value)}
-                    placeholder="-70.4781"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-all"
-                  />
-                </div>
-              </div>
+    <div className="grid grid-cols-2 gap-2">
+      <div>
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1">
+          Latitude (N/S)
+        </label>
+        <input
+          type="text"
+          value={latInput}
+          onChange={(e) => setLatInput(e.target.value)}
+          placeholder="-4.3822"
+          className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-all"
+        />
+      </div>
 
-              <button
-                onClick={handleAnalyzeCustom}
-                disabled={isScanning}
-                className="w-full bg-slate-900 hover:bg-teal-600 text-white font-sans text-xs font-bold py-2.8 px-4 rounded-lg shadow transition-all flex items-center justify-center gap-2"
-              >
-                {isScanning ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    Crunching Pixels...
-                  </>
-                ) : (
-                  <>
-                    <Cpu className="w-3.5 h-3.5" />
-                    Analyze Coordinates
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+      <div>
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 mb-1">
+          Longitude (E/W)
+        </label>
+        <input
+          type="text"
+          value={lngInput}
+          onChange={(e) => setLngInput(e.target.value)}
+          placeholder="-70.4781"
+          className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-500 transition-all"
+        />
+      </div>
+    </div>
 
+    {/* Satellite Image Classification */}
+    <div className="border-t border-slate-100 pt-4 mt-4 space-y-3">
+      <div className="flex items-center gap-2">
+        <Layers className="w-4 h-4 text-teal-600" />
+        <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">
+          Satellite Image Classification
+        </h3>
+      </div>
+
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => {
+          const file = e.target.files?.[0] || null;
+          setSelectedImage(file);
+          setImagePrediction(null);
+        }}
+        className="w-full text-xs text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-teal-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-teal-700 hover:file:bg-teal-100"
+      />
+
+      {selectedImage && (
+        <p className="text-[10px] font-mono text-slate-500 break-all">
+          Selected: {selectedImage.name}
+        </p>
+      )}
+
+      <button
+        onClick={handleImageClassification}
+        disabled={!selectedImage || isImageAnalyzing}
+        className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-sans text-xs font-bold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+      >
+        {isImageAnalyzing ? (
+          <>
+            <RefreshCw className="w-4 h-4 animate-spin" />
+            Analyzing Image...
+          </>
+        ) : (
+          <>
+            <Cpu className="w-4 h-4" />
+            Analyze Satellite Image
+          </>
+        )}
+      </button>
+
+      {imagePrediction && (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-left">
+          <p className="text-[10px] font-mono uppercase tracking-wider text-emerald-700">
+            ML Prediction
+          </p>
+          <p className="mt-1 text-sm font-bold text-slate-800">
+            {imagePrediction.predicted_class}
+          </p>
+          <p className="text-xs text-slate-600">
+            Confidence: {imagePrediction.confidence}%
+          </p>
+        </div>
+      )}
+    </div>
+
+    <button
+      onClick={handleAnalyzeCustom}
+      disabled={isScanning}
+      className="w-full bg-slate-900 hover:bg-teal-600 text-white font-sans text-xs font-bold py-2.8 px-4 rounded-lg shadow transition-all flex items-center justify-center gap-2"
+    >
+      {isScanning ? (
+        <>
+          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+          Crunching Pixels...
+        </>
+      ) : (
+        <>
+          <Cpu className="w-3.5 h-3.5" />
+          Analyze Coordinates
+        </>
+      )}
+    </button>
+  </div>
+</div> 
+            
           {/* Active Preset Targets */}
           <div className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-3 flex-1 text-left">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
