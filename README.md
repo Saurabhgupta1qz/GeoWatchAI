@@ -237,7 +237,7 @@ npm run dev
 Frontend URL:
 
 ```text
-http://localhost:3000
+https://frontend-two-gamma-17.vercel.app/
 ```
 
 ---
