@@ -457,11 +457,38 @@ export default function Dashboard({ selectedZone, onSelectZone, onAddToAlerts }:
   }, [activeZone, activeLayer, showGrid, showBorders, zoomLevel]);
 
   // Handle Dispatch click
-  const handleAlertDispatch = () => {
-    onAddToAlerts(activeZone);
-    showNotification(`DISPATCH ACTION VERIFIED: National Compliance alert initiated for ${activeZone.name}. Dispatch logs transmitted to District Forest Officer.`, 'success');
-  };
+  const handleAlertDispatch = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/create-case', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        case_id: `GW-${Date.now()}`,
+        location: activeZone.name,
+        risk_score: activeZone.riskScore,
+        priority: activeZone.priority,
+      }),
+    });
 
+    const data = await response.json();
+
+    if (response.ok) {
+      onAddToAlerts(activeZone);
+
+      showNotification(
+        `Case Created Successfully. ArmorIQ Status: ${data.armor_policy?.status}`,
+        'success'
+      );
+    } else {
+      showNotification('Case creation failed.', 'error');
+    }
+  } catch (error) {
+    console.error(error);
+    showNotification('Backend connection failed.', 'error');
+  }
+};
   return (
     <div id="command-center-workspace" className="max-w-7xl mx-auto px-6 py-6 space-y-6">
       

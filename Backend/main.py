@@ -5,7 +5,7 @@ from gemini_service import analyze_location as ai_analyze_location
 from armoriq_service import check_policy
 import json
 from datetime import datetime
-
+from satellite_service import classify_satellite_image
 app = FastAPI(title="GeoWatch AI")
 
 latest_case = {
@@ -186,3 +186,18 @@ def generate_report(data: ReportRequest):
 @app.get("/audit-logs")
 def get_audit_logs():
     return audit_logs
+
+from pydantic import BaseModel
+
+class ImageRequest(BaseModel):
+    image_path: str
+
+
+@app.post("/classify-image")
+def classify_image(data: ImageRequest):
+    result = classify_satellite_image(data.image_path)
+
+    return {
+        "success": True,
+        "prediction": result
+    }
