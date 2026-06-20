@@ -193,25 +193,25 @@ def get_audit_logs():
 from fastapi import UploadFile, File
 import os
 
-<<<<<<< HEAD
-@app.post("/classify-image")
-async def classify_image(file: UploadFile = File(...)):
-    upload_dir = "uploaded_images"
-    os.makedirs(upload_dir, exist_ok=True)
 
-    file_path = os.path.join(upload_dir, file.filename)
+# @app.post("/classify-image")
+# async def classify_image(file: UploadFile = File(...)):
+#     upload_dir = "uploaded_images"
+#     os.makedirs(upload_dir, exist_ok=True)
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+#     file_path = os.path.join(upload_dir, file.filename)
 
-    result = classify_satellite_image(file_path)
+#     with open(file_path, "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
 
-    return {
-        "success": True,
-        "filename": file.filename,
-        "prediction": result
-    }
-=======
+#     result = classify_satellite_image(file_path)
+
+#     return {
+#         "success": True,
+#         "filename": file.filename,
+#         "prediction": result
+#     }
+
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -236,4 +236,4 @@ async def classify_image(file: UploadFile = File(...)):
             "success": False,
             "error": str(e)
         }
->>>>>>> 0e81ef47aadb9c28cd68062c9ac345d232f6e6f2
+

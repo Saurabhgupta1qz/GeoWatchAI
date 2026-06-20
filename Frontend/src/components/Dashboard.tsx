@@ -55,6 +55,7 @@ export default function Dashboard({ selectedZone, onSelectZone, onAddToAlerts }:
   const [showGrid, setShowGrid] = useState<boolean>(true);
   const [showBorders, setShowBorders] = useState<boolean>(true);
   const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [armorPolicyStatus, setArmorPolicyStatus] = useState<string | null>(null);
 
   // Scanning simulation state
   const [isScanning, setIsScanning] = useState<boolean>(false);
@@ -174,6 +175,7 @@ const [isImageAnalyzing, setIsImageAnalyzing] = useState(false);
     }
 
     const data = await response.json();
+    console.log("Backend Response:", data);
 
     const riskScore = data.risk_score ?? 55;
     let threatLevel: ThreatLevel = 'LOW';
@@ -240,6 +242,7 @@ const handleImageClassification = async () => {
     }
 
     const data = await response.json();
+    console.log("Image Classification:", data);
     setImagePrediction(data.prediction);
 
     showNotification(
@@ -514,6 +517,9 @@ const handleImageClassification = async () => {
     });
 
     const data = await response.json();
+     console.log("ArmorIQ Policy:", data.armor_policy);
+    setArmorPolicyStatus(data.armor_policy.status);
+   
 
     if (response.ok) {
       onAddToAlerts(activeZone);
@@ -1226,6 +1232,17 @@ const handleImageClassification = async () => {
                 <ShieldAlert className="w-4 h-4 animate-pulse" />
                 Trigger Compliance Escalation
               </button>
+              {armorPolicyStatus && (
+  <div className="mt-3 rounded-lg border border-emerald-300 bg-emerald-50 p-3">
+    <div className="font-bold text-emerald-700">
+      🛡 ArmorIQ Policy Validation
+    </div>
+
+    <div className="text-sm text-slate-700 mt-1">
+      Status: {armorPolicyStatus}
+    </div>
+  </div>
+)}
             </div>
 
           </div>
@@ -1243,19 +1260,19 @@ const handleImageClassification = async () => {
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className={`fixed top-4 right-4 z-[9999] max-w-sm p-4 rounded-xl border shadow-xl flex gap-3 items-start ${
-              notification.type === 'success'
-                ? 'bg-teal-950 border-teal-500/30 text-teal-250'
-                : notification.type === 'error'
-                ? 'bg-red-950 border-red-500/30 text-red-250'
-                : 'bg-slate-900 border-slate-700 text-slate-200'
+           notification.type === 'success'
+? 'bg-green-100 border-green-500 text-green-900'
+: notification.type === 'error'
+? 'bg-red-100 border-red-500 text-red-900'
+: 'bg-blue-100 border-blue-500 text-blue-900'
             }`}
           >
             {notification.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-teal-400 mt-0.5 shrink-0 animate-bounce" />
+             <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 shrink-0 animate-bounce" />
             ) : notification.type === 'error' ? (
-              <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 shrink-0 animate-pulse" />
+             <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 shrink-0 animate-pulse" />
             ) : (
-              <Cpu className="w-5 h-5 text-slate-400 mt-0.5 shrink-0" />
+              <Cpu className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
             )}
             <div className="flex-1 space-y-1">
               <p className="font-mono text-[9px] uppercase tracking-widest font-bold opacity-60 text-left">

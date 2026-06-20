@@ -102,12 +102,61 @@ export default function InspectionOperations({
     });
   };
 
-  // Schedule / Dispatch Field Inspection Workflow
-const handleDispatchTeam = async () => {
+//   // Schedule / Dispatch Field Inspection Workflow
+// Schedule / Dispatch Field Inspection Workflow
+// const handleDispatchTeam = async () => {
 
-  const result = await analyzeLocation(activeCase.lat, activeCase.lng);
-  console.log("Backend Response:", result);
-  setDispatchStatusMsg(
+//   const result = await analyzeLocation(activeCase.lat, activeCase.lng);
+
+//   console.log("Backend Response:", result);
+
+//   onUpdateCase({
+//     ...activeCase,
+//     riskScore: result.risk_score,
+//     priority: result.priority,
+//   });
+
+//   setDispatchStatusMsg(
+//     `AI Analysis Complete | Risk Score: ${result.risk_score} | Priority: ${result.priority}`
+//   );
+
+//   triggerVerification('Dispatch Team', () => {
+//     const dateStr = expectedInspectionDate || new Date().toISOString().split('T')[0];
+
+//     const newEvent: AuditEvent = {
+//       event: 'Field Verification Started',
+//       timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16) + ' UTC',
+//       description: `Joint environmental survey team deployed to site coordinates (${activeCase.lat.toFixed(4)}, ${activeCase.lng.toFixed(4)}) with laser-canopy scanners and water core collection protocols.`
+//     };
+
+//     const updated: Case = {
+//       ...activeCase,
+//       status: 'Inspection Scheduled',
+//       expectedInspectionDate: dateStr,
+//       auditTimeline: [newEvent, ...activeCase.auditTimeline]
+//     };
+
+//     onUpdateCase(updated);
+
+//     setDispatchStatusMsg(
+//       `FIELD SURVEY INITIATED: Verification squads mobilized toward ${activeCase.locationName}.`
+//     );
+
+//     setTimeout(() => setDispatchStatusMsg(null), 4000);
+//   });
+// };
+const handleDispatchTeam = async () => {
+const result = await analyzeLocation(activeCase.lat, activeCase.lng);
+
+console.log("Backend Response:", result);
+
+onUpdateCase({
+  ...activeCase,
+  riskScore: result.risk_score,
+  priority: result.priority,
+});
+
+setDispatchStatusMsg(
   `AI Analysis Complete | Risk Score: ${result.risk_score} | Priority: ${result.priority}`
 );
 
