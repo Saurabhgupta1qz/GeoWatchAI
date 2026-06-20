@@ -213,13 +213,13 @@ uvicorn main:app --reload
 Backend URL:
 
 ```text
-http://127.0.0.1:8000
+http://geowatch-backend-cmrc.onrender.com
 ```
 
 Swagger Docs:
 
 ```text
-http://127.0.0.1:8000/docs
+http://geowatch-backend-cmrc.onrender.com/docs
 ```
 
 ---
